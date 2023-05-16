@@ -7,6 +7,8 @@ import { formValidate } from "../utils/formValidate";
 
 import FormError from "../components/FormError";
 import FormInput from "../components/FormInput";
+import Title from "../components/Title";
+import Button from "../components/Button";
 
 const Register = () => {
   const { registerUser } = useContext(UserContext);
@@ -28,24 +30,25 @@ const Register = () => {
       navegate("/");
     } catch (error) {
       console.log(error.code);
-      setError("firebase", {
-        message: erroresFirebase(error.code),
-      });
+      const { code, message } = erroresFirebase(error.code);
+      setError(code, { message });
     }
   };
 
   return (
     <>
-      <h1>Register</h1>
+      <Title text='Registro de Usuario' />
       <FormError error={errors.firebase} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormInput
           type='email'
           placeholder='test@test.com'
+          label='Inserta tu email'
           {...register("email", {
             required,
             pattern: patternEmail,
           })}
+          error={errors.email}
         >
           <FormError error={errors.email} />
         </FormInput>
@@ -53,10 +56,12 @@ const Register = () => {
         <FormInput
           type='password'
           placeholder='*******'
+          label='Inserta la contraseña'
           {...register("password", {
             minLength,
             validate: validateTrim,
           })}
+          error={errors.password}
         >
           <FormError error={errors.password} />
         </FormInput>
@@ -64,13 +69,15 @@ const Register = () => {
         <FormInput
           type='password'
           placeholder='*******'
+          label='Repite la contraseña'
           {...register("repassword", {
-            validate: validateEquals(getValues),
+            validate: validateEquals(getValues("password")),
           })}
+          error={errors.repassword}
         >
           <FormError error={errors.repassword} />
         </FormInput>
-        <button type='submit'>Register</button>
+        <Button text='Registrate' type='submit' />
       </form>
     </>
   );
