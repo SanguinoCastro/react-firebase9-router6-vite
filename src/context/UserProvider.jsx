@@ -9,7 +9,7 @@ import { auth } from "../firebase";
 
 export const UserContext = createContext();
 
-const UserProvider = (props) => {
+const UserProvider = ({ children }) => {
   const [user, setUser] = useState(false);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const UserProvider = (props) => {
     <UserContext.Provider
       value={{ user, setUser, registerUser, loginUser, signOutUser }}
     >
-      {props.children}
+      {children}
     </UserContext.Provider>
   );
 };
