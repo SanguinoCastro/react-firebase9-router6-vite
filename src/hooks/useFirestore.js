@@ -1,15 +1,14 @@
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore/lite"
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore/lite"
 import { useState } from "react"
 import { db, auth} from "../firebase"
 import { nanoid } from "nanoid"
 
 export const useFirestore = () => { 
-    const [data, setData] = useState([])
-    const [error, setError] = useState()
-    const [loading, setLoading] = useState({ })
+    const [data, setData] = useState([]);
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState({ });
 
     const getData = async () => {
-        console.log(auth.currentUser)
         try {
             setLoading(prev => ({...prev, getData: true}));
             const dataRef= collection(db, 'urls');
@@ -26,7 +25,7 @@ export const useFirestore = () => {
         } finally {
             setLoading(prev => ({...prev, getData: false}));
         }
-    }
+    };
 
     const addData = async(url) => {
 
@@ -49,7 +48,7 @@ export const useFirestore = () => {
         }finally{
             setLoading(prev => ({...prev, addData: false}))
         }
-    }
+    };
 
     const deleteData = async(nanoid) => {
         try {
@@ -63,7 +62,7 @@ export const useFirestore = () => {
         }finally{
             setLoading(prev => ({...prev, [nanoid]: false}))
         }
-    }
+    };
 
     const updateData = async (nanoid, newOrigin) => { 
         
@@ -79,7 +78,25 @@ export const useFirestore = () => {
             setLoading(prev => ({...prev, updateData: false}))
         }
 
-     }
+     };
+
+     const searchData = async (nanoid) => {
+
+        try {
+            
+            const docRef = doc(db, 'urls', nanoid);
+            const docSnap = await getDoc(docRef);
+
+            return docSnap
+            
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+        }finally{
+            
+        }
+        
+     };
 
     return {
         data,
@@ -89,5 +106,6 @@ export const useFirestore = () => {
         addData,
         deleteData,
         updateData,
-    }
+        searchData,
+    };
  }
